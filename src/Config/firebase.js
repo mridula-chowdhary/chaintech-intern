@@ -1,7 +1,7 @@
-// src/Config/firebase.js
+
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
-import { getFirestore } from "firebase/firestore"; // Changed from getDatabase to getFirestore
+import { getFirestore } from "firebase/firestore"; 
 
 const firebaseConfig = {
   apiKey: "AIzaSyC3-rrCN-YacpCGCjYBn5bxqdeFNDKNg-M",
@@ -18,6 +18,6 @@ const app = initializeApp(firebaseConfig);
 
 // Initialize Firebase services
 const auth = getAuth(app);
-const db = getFirestore(app); // Changed from getDatabase to getFirestore
+const db = getFirestore(app); 
 
 export { auth, db };

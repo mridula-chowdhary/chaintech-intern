@@ -1,4 +1,3 @@
-// src/components/Logout.js
 import React from 'react';
 import { Button } from 'react-bootstrap';
 import { auth } from '../Config/firebase';
@@ -7,12 +6,13 @@ import { useNavigate } from 'react-router-dom';
 function Logout() {
     const navigate = useNavigate();
 
-    const handleLogout = () => {
-        auth.signOut().then(() => {
+    const handleLogout = async () => {
+        try {
+            await auth.signOut();
             navigate('/login');
-        }).catch((error) => {
+        } catch (error) {
             console.error('Error signing out:', error);
-        });
+        }
     };
 
     return (
