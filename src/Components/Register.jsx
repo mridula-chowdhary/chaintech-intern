@@ -1,97 +1,84 @@
 import React, { useState } from 'react';
-import { Form, Button, Container, Row, Col } from 'react-bootstrap';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { auth, db } from '../Config/firebase';
-import { doc, setDoc } from 'firebase/firestore';
-import { useNavigate } from 'react-router-dom';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { Link, useNavigate } from 'react-router-dom';
 
-function Register() {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [username, setUsername] = useState('');
-    const [phoneNumber, setPhoneNumber] = useState('');
-    const navigate = useNavigate();
+const Register = () => {
+  const navigate = useNavigate();
+  const [userDetails, setUserDetails] = useState({
+    firstName: '',
+    lastName: '',
+    userName: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
+  });
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        try {
-            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-            const user = userCredential.user;
-            await setDoc(doc(db, 'users', user.uid), {
-                username,
-                phoneNumber,
-                email
-            });
-            toast.success("Registration successful!");
-            navigate('/account');
-        } catch (error) {
-            toast.error("Registration failed: " + error.message);
-        }
-    };
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setUserDetails((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
 
-    return (
-        <Container className="mt-5">
-            <Row className="justify-content-center">
-                <Col md={6} lg={4}>
-                    <div className="p-4 border rounded shadow-sm bg-light">
-                        <h2 className="text-center mb-4">Register</h2>
-                        <ToastContainer />
-                        <Form onSubmit={handleSubmit}>
-                            <Form.Group controlId="formBasicEmail" className="mb-3">
-                                <Form.Label>Email address</Form.Label>
-                                <Form.Control
-                                    type="email"
-                                    placeholder="Enter email"
-                                    value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
-                                    required
-                                />
-                            </Form.Group>
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (userDetails.password === userDetails.confirmPassword) {
+      localStorage.setItem('userDetails', JSON.stringify(userDetails));
+      navigate('/login');
+    } else {
+      setUserDetails({
+        firstName: '',
+        lastName: '',
+        userName: '',
+        email: '',
+        password: '',
+        confirmPassword: '',
+      });
+      navigate('/registration');
+    }
+  };
 
-                            <Form.Group controlId="formBasicPassword" className="mb-3">
-                                <Form.Label>Password</Form.Label>
-                                <Form.Control
-                                    type="password"
-                                    placeholder="Password"
-                                    value={password}
-                                    onChange={(e) => setPassword(e.target.value)}
-                                    required
-                                />
-                            </Form.Group>
-
-                            <Form.Group controlId="formUsername" className="mb-3">
-                                <Form.Label>Username</Form.Label>
-                                <Form.Control
-                                    type="text"
-                                    placeholder="Enter username"
-                                    value={username}
-                                    onChange={(e) => setUsername(e.target.value)}
-                                    required
-                                />
-                            </Form.Group>
-
-                            <Form.Group controlId="formPhoneNumber" className="mb-3">
-                                <Form.Label>Phone Number</Form.Label>
-                                <Form.Control
-                                    type="text"
-                                    placeholder="Enter phone number"
-                                    value={phoneNumber}
-                                    onChange={(e) => setPhoneNumber(e.target.value)}
-                                    required
-                                />
-                            </Form.Group>
-
-                            <Button variant="primary" type="submit" className="w-100">
-                                Register
-                            </Button>
-                        </Form>
-                    </div>
-                </Col>
-            </Row>
-        </Container>
-    );
-}
+  return (
+    <div className='registration-page rounded-4 border border-1 bg-body-tertiary mb-4 p-4'>
+      <ul className="nav nav-pills nav-justified mb-3">
+        <li className="nav-item">
+          <Link className="nav-link" to="/login">Login</Link>
+        </li>
+        <li className="nav-item">
+          <Link className="nav-link active" to="/registration">Register</Link>
+        </li>
+      </ul>
+      <form onSubmit={handleSubmit}>
+        <div className="form-floating mb-4">
+          <input type="text" id="firstName" className="form-control" name='firstName' value={userDetails.firstName} onChange={handleChange} placeholder='John' />
+          <label htmlFor="firstName">First Name</label>
+        </div>
+        <div className="form-floating mb-4">
+          <input type="text" id="lastName" className="form-control" name='lastName' value={userDetails.lastName} onChange={handleChange} placeholder='Doe' />
+          <label htmlFor="lastName">Last Name</label>
+        </div>
+        <div className="form-floating mb-4">
+          <input type="text" id="registerUsername" className="form-control" name='userName' value={userDetails.userName} onChange={handleChange} placeholder='John Doe' />
+          <label htmlFor="registerUsername">Username</label>
+        </div>
+        <div className="form-floating mb-4">
+          <input type="email" id="registerEmail" className="form-control" name='email' value={userDetails.email} onChange={handleChange} placeholder="name@example.com"/>
+          <label htmlFor="registerEmail">Email</label>
+        </div>
+        <div className="form-floating mb-4">
+          <input type="password" id="registerPassword" className="form-control" name='password' value={userDetails.password} onChange={handleChange} placeholder='password'/>
+          <label htmlFor="registerPassword">Password</label>
+        </div>
+        <div className="form-floating mb-4">
+          <input type="password" id="registerRepeatPassword" className="form-control" name='confirmPassword' value={userDetails.confirmPassword} onChange={handleChange} placeholder='repeat password' />
+          <label htmlFor="registerRepeatPassword">Repeat password</label>
+        </div>
+        <div className="text-center">
+          <button type="submit" className="btn btn-primary btn-block mb-4">Sign Up</button>
+        </div>
+      </form>
+    </div>
+  );
+};
 
 export default Register;

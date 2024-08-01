@@ -1,25 +1,28 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import Login from './Components/Login';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Navbar from './Components/Navbar';
 import Register from './Components/Register';
+import Login from './Components/Login';
 import Account from './Components/Account';
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import './Config/firebase'; 
+import About from './Components/Aboutus';
 
-function App() {
+const App = () => {
   return (
-    <div className="App">
-      <ToastContainer />
-      <Router>
-        <Routes>
-          <Route path="/login" element={<Login />} />
-          <Route path="/" element={<Register />} />
-          <Route path="/account" element={<Account />} />
-        </Routes>
-      </Router>
-    </div>
+    <Router>
+      <div>
+        <Navbar />
+        <div className="container mt-4">
+          <Routes>
+            <Route path="/registration" element={<Register />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/account" element={<Account editable={true} />} />
+            <Route path="/home" element={<Account editable={false} />} />
+            <Route path ='/about' element={<About/>}/>
+          </Routes>
+        </div>
+      </div>
+    </Router>
   );
-}
+};
 
 export default App;
